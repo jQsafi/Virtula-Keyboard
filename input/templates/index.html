@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Touch Events Example</title>
+</head>
+<body>
+<div id="touchArea" style="width: 100VW; height: 300px; background-color: lightgray;">
+    Touch and move here
+</div>
+
+<p>Touch coordinates:</p>
+<p id="coordinates">X: 0, Y: 0</p>
+
+<script>
+        const touchArea = document.getElementById('touchArea');
+        const coordinatesDisplay = document.getElementById('coordinates');
+        let touchX = 0;
+        let touchY = 0;
+
+        touchArea.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            touchX = touch.clientX;
+            touchY = touch.clientY;
+        });
+        touchArea.addEventListener('touchmove', function(event) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            const newX = touch.clientX;
+            const newY = touch.clientY;
+            const deltaX = newX - touchX;
+            const deltaY = newY - touchY;
+            touchX = newX;
+            touchY = newY;
+            const data = {
+                touchX: deltaX,
+                touchY: deltaY
+            };
+            remoteUrl = "ws://your_pc_ip_address:12345";
+            const socket = new WebSocket(remoteUrl); // Replace with your PC's IP and port
+            socket.onopen = function(event) {
+                socket.send("move_cursor");
+                socket.send(`${deltaX},${deltaY}`);
+                socket.close();
+            };
+        });
+
+        // Add a touchend event listener (optional)
+        touchArea.addEventListener('touchend', function(event) {
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
